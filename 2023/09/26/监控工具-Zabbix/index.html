@@ -1,0 +1,834 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>监控工具-Zabbix | Linux运维学习笔记</title><meta name="author" content="demacia9"><meta name="copyright" content="demacia9"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Zabbix安装部署一、部署zabbix监控平台a. 安装zabbix下载源 [root@zutuanxue ~]# rpm -Uvh https:&#x2F;&#x2F;repo.zabbix.com&#x2F;zabbix&#x2F;4.4&#x2F;rhel&#x2F;8&#x2F;x86_64&#x2F;zabbix-release-4.4-1.el8.noarch.rpm [root@zutuanxue ~]# dnf clean all  b. 安装Zabbix">
+<meta property="og:type" content="article">
+<meta property="og:title" content="监控工具-Zabbix">
+<meta property="og:url" content="http://example.com/2023/09/26/%E7%9B%91%E6%8E%A7%E5%B7%A5%E5%85%B7-Zabbix/index.html">
+<meta property="og:site_name" content="Linux运维学习笔记">
+<meta property="og:description" content="Zabbix安装部署一、部署zabbix监控平台a. 安装zabbix下载源 [root@zutuanxue ~]# rpm -Uvh https:&#x2F;&#x2F;repo.zabbix.com&#x2F;zabbix&#x2F;4.4&#x2F;rhel&#x2F;8&#x2F;x86_64&#x2F;zabbix-release-4.4-1.el8.noarch.rpm [root@zutuanxue ~]# dnf clean all  b. 安装Zabbix">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/001.jpg">
+<meta property="article:published_time" content="2023-09-26T10:29:46.000Z">
+<meta property="article:modified_time" content="2023-09-26T10:43:37.933Z">
+<meta property="article:author" content="demacia9">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/001.jpg"><link rel="shortcut icon" href="/img/11680.jpg"><link rel="canonical" href="http://example.com/2023/09/26/%E7%9B%91%E6%8E%A7%E5%B7%A5%E5%85%B7-Zabbix/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '监控工具-Zabbix',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-09-26 18:43:37'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/001.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/timeline/"><i class="fa-fw fa fa-bell"></i><span> 日志</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 菜单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/about"><i class="fa-fw /about/"></i><span> 0</span></a></li><li><a class="site-page child" href="/myself"><i class="fa-fw /myself/"></i><span> 1</span></a></li><li><a class="site-page child" href="/butterfly"><i class="fa-fw https://github.com/jerryc127/hexo-theme-butterfly/"></i><span> 2</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/003.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Linux运维学习笔记"><span class="site-name">Linux运维学习笔记</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/timeline/"><i class="fa-fw fa fa-bell"></i><span> 日志</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 菜单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/about"><i class="fa-fw /about/"></i><span> 0</span></a></li><li><a class="site-page child" href="/myself"><i class="fa-fw /myself/"></i><span> 1</span></a></li><li><a class="site-page child" href="/butterfly"><i class="fa-fw https://github.com/jerryc127/hexo-theme-butterfly/"></i><span> 2</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">监控工具-Zabbix</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-09-26T10:29:46.000Z" title="发表于 2023-09-26 18:29:46">2023-09-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-09-26T10:43:37.933Z" title="更新于 2023-09-26 18:43:37">2023-09-26</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="监控工具-Zabbix"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Zabbix安装部署"><a href="#Zabbix安装部署" class="headerlink" title="Zabbix安装部署"></a>Zabbix安装部署</h1><h2 id="一、部署zabbix监控平台"><a href="#一、部署zabbix监控平台" class="headerlink" title="一、部署zabbix监控平台"></a>一、部署zabbix监控平台</h2><p>a. 安装zabbix下载源</p>
+<pre><code>[root@zutuanxue ~]# rpm -Uvh https://repo.zabbix.com/zabbix/4.4/rhel/8/x86_64/zabbix-release-4.4-1.el8.noarch.rpm
+[root@zutuanxue ~]# dnf clean all
+</code></pre>
+<p>b. 安装Zabbix server，Web前端，agent</p>
+<pre><code>[root@zutuanxue ~]# dnf -y install zabbix-server-mysql zabbix-web-mysql zabbix-apache-conf zabbix-agent
+
+##
+注意：如果国外的官方源下载失败或者速度慢，直接切换阿里的源即可
+[root@zutuanxue ~]# cat /etc/yum.repos.d/zabbix.repo 
+[zabbix]
+name=Zabbix Official Repository - $basearch
+baseurl=https://mirrors.aliyun.com/zabbix/zabbix/4.4/rhel/8/$basearch/
+enabled=1
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX-A14FE591
+
+[zabbix-non-supported]
+name=Zabbix Official Repository non-supported - $basearch 
+baseurl=http://repo.zabbix.com/non-supported/rhel/8/$basearch/
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX
+gpgcheck=1
+##
+</code></pre>
+<p>c. 创建初始数据库</p>
+<pre><code>[root@zutuanxue ~]# systemctl restart mariadb.service 
+[root@zutuanxue ~]# mysqladmin -u root password &#39;123456&#39;
+[root@zutuanxue ~]# mysql -u root -p
+Enter password: 
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 9
+Server version: 10.3.11-MariaDB MariaDB Server
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type &#39;help;&#39; or &#39;\h&#39; for help. Type &#39;\c&#39; to clear the current input statement.
+
+MariaDB [(none)]&gt; create database zabbix character set utf8 collate utf8_bin;
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [(none)]&gt; grant all privileges on zabbix.* to zabbix@localhost identified by &#39;123456&#39;;
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [(none)]&gt; quit
+Bye
+
+导入初始架构和数据
+[root@zutuanxue ~]# zcat /usr/share/doc/zabbix-server-mysql/create.sql.gz | mysql -uzabbix -p zabbix
+Enter password: 
+</code></pre>
+<p>d. 为Zabbix server配置数据库<br>编辑配置文件 &#x2F;etc&#x2F;zabbix&#x2F;zabbix_server.conf</p>
+<pre><code>[root@zutuanxue ~]# vim /etc/zabbix/zabbix_server.conf 
+DBPassword=123456
+</code></pre>
+<p>e. 为Zabbix前端配置PHP<br>编辑配置文件 &#x2F;etc&#x2F;php-fpm.d&#x2F;zabbix.conf</p>
+<pre><code>[root@zutuanxue ~]# vim /etc/php-fpm.d/zabbix.conf 
+php_value[date.timezone] = Asia/Shanghai
+</code></pre>
+<p>f. 启动Zabbix server和agent进程<br>启动Zabbix server和agent进程，并为它们设置开机自启：</p>
+<pre><code>[root@zutuanxue ~]# systemctl restart zabbix-server zabbix-agent httpd php-fpm
+[root@zutuanxue ~]# systemctl enable zabbix-server zabbix-agent httpd php-fpm
+[root@zutuanxue ~]# netstat -ntlp	#zabbix_server的端口是10051
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+tcp        0      0 0.0.0.0:10051           0.0.0.0:*               LISTEN      2106/zabbix_server  
+tcp6       0      0 :::10051                :::*                    LISTEN      2106/zabbix_server  
+</code></pre>
+<p>g. 配置Zabbix前端<br>连接到新安装的Zabbix前端： <a target="_blank" rel="noopener" href="http://server_ip_or_name/zabbix">http://server_ip_or_name/zabbix</a></p>
+<h2 id="二、站点设置"><a href="#二、站点设置" class="headerlink" title="二、站点设置"></a>二、站点设置</h2><p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603529129928.png" alt="image20200206131850564.png"></p>
+<p>图：zabbix-web-setup-01</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603528792468.png" alt="image20200206132044127.png"></p>
+<p>图：zabbix-web-setup-02</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603528835307.png" alt="zabbix_web3.png"></p>
+<p>图：zabbix-web-setup-03</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603528855897.png" alt="zabbix_web4.png"></p>
+<p>图：zabbix-web-setup-04</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603528868438.png" alt="zabbix_web5.png"></p>
+<p>图：zabbix-web-setup-05</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603528880574.png" alt="zabbix_web6.png"></p>
+<p>图：zabbix-web-setup-06</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603528902697.png" alt="image20200206132343605.png"></p>
+<p>图：zabbix-web-setup-07</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603528915822.png" alt="image20200206132450564.png"></p>
+<p>图：zabbix-web-setup-08</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603528929618.png" alt="image20200206132720327.png"></p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603528945191.png" alt="image20200206132751747.png"></p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603528963513.png" alt="image20200206132813412.png"></p>
+<h2 id="三、zabbix-web界面介绍"><a href="#三、zabbix-web界面介绍" class="headerlink" title="三、zabbix web界面介绍"></a>三、zabbix web界面介绍</h2><p>我们现在已经登录了zabbix的页面，并且设置成了中文，那我们一起来看一下这个设置成中文后的界面</p>
+<p>监测—仪表盘</p>
+<p> 在仪表板当中我们可以查看到很多信息，如果感觉信息不够丰富的话，在右上角可以选择编辑仪表盘，添加新的内容。</p>
+<p>可以挨着点一下后面的选项，都是没有内容的，这个我们后面都会说到</p>
+<p>监测—图形</p>
+<p>在这里可以查看各种类型的图表，比如</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603529260849.png" alt="image20200206133841844.png"></p>
+<p>通过右上方的时间选项你可以获取到不同时间范围的信息，这就是可持续化的体现，因为这些数据都存放到数据库里面了，但是不管选择哪个时间范围的，你都会发现有乱码，为什么会有乱码？因为没有相关的字库，所以我们要解决乱码的问题</p>
+<p>关于zabbix web设置成中文后图形上的汉字显示乱码问题-解决方案。</p>
+<pre><code>复制本地电脑C:\Windows\Fonts\simkai.ttf（楷体）上传到zabbix服务器
+[root@zutuanxue ~]# cp SIMKAI.TTF /usr/share/fonts/dejavu/
+[root@zutuanxue ~]# chmod 644 /usr/share/fonts/dejavu/SIMKAI.TTF 
+[root@zutuanxue ~]# cd /etc/alternatives/
+[root@zutuanxue alternatives]# rm -fr zabbix-web-font
+[root@zutuanxue alternatives]# ln -s /usr/share/fonts/dejavu/SIMKAI.TTF /etc/alternatives/zabbix-web-font
+
+刷新页面
+</code></pre>
+<h2 id="四、监控本机"><a href="#四、监控本机" class="headerlink" title="四、监控本机"></a>四、监控本机</h2><p>zabbix默认就是对本机进行监控的，但是一定要开启zabbix-agent服务，在对应的界面，我们可以看到，zabbix的监控有四种：</p>
+<ul>
+<li>ZBX</li>
+<li>SNMP</li>
+<li>JMX</li>
+<li>IPMI</li>
+</ul>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603529384793.png" alt="image20200216003900217.png"></p>
+<ul>
+<li>绿色表示正常</li>
+<li>红色则表示有问题<br>如果出现红色了，首先要检查系统中是否安装了zabbix-agent软件包，然后再确认服务是否开启，第三个要检查状态是否已启用。各位可以尝试停止zabbix-agent服务，并且点击一下状态下的已启用按钮改为停用，看一下彻底不好用是什么样的。</li>
+</ul>
+<pre><code>systemctl stop zabbix-agent
+</code></pre>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603529402589.png" alt="image20200216004245599.png"></p>
+<h1 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h1><p>安装完zabbix后，已经自带了两个用户</p>
+<ul>
+<li>Admin</li>
+<li>Guests</li>
+</ul>
+<p><strong>超级管理员默认账号：</strong> Admin，密码：zabbix，这是一个超级管理员。</p>
+<p><strong>Guests用户:</strong> 使用guest账号，密码为空，只能看到zabbix后台，没有具体内容。我们可以启用来宾账户，使用来宾账户登录到zabbix页面看一下。</p>
+<p><strong>用户群组：</strong> 群组的增删改查，和权限管理</p>
+<p><strong>用户管理：</strong> 用户增删改查、用户报警媒介管理、用户权限查看。</p>
+<p>要添加一个用户，有三类属性要填写。</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>用户信息</strong></td>
+<td>账号密码、所属组等基本信息</td>
+</tr>
+<tr>
+<td><strong>示警媒介</strong></td>
+<td>报警相关信息，例如邮箱地址、接受报警时段</td>
+</tr>
+<tr>
+<td><strong>许可权</strong></td>
+<td>权限，当前用户对哪些主机有权限</td>
+</tr>
+</tbody></table>
+<p>zabbix 用户和权限类似windows，用户的有什么权限是组说了算</p>
+<p><strong>案例：</strong> 创建一个群组和用户</p>
+<p><strong>群组创建</strong><br>选择 管理–&gt;用户群组–&gt;创建用户群组</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603529646527.png" alt="image20200206152939063.png"></p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603529662642.png" alt="image20200206153014812.png"></p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603529674722.png" alt="image20200206153034828.png"></p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603529685233.png" alt="image20200206153102222.png"></p>
+<p><strong>用户创建</strong></p>
+<p>管理–&gt;用户–&gt;创建用户</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603529748943.png" alt="image20200206153449530.png"></p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603529760946.png" alt="image20200206153539824.png"></p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603529772009.png" alt="image20200206153750908.png"></p>
+<p>最后再点击添加</p>
+<p>验证用户是否为只读权限</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603529783971.png" alt="image20200206154053192.png"></p>
+<p>由于新建的用户只有只读的权限，所以根本没有“配置”、“管理”字样的选项</p>
+<h1 id="监控案例—监控一台服务器"><a href="#监控案例—监控一台服务器" class="headerlink" title="监控案例—监控一台服务器"></a>监控案例—监控一台服务器</h1><p><strong>案例： 通过监控平台监控一台远端的业务机器</strong></p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603530035321.png" alt="监控远端机器.png"></p>
+<p>监控方法:zabbix-agent</p>
+<p>监控步骤：</p>
+<p>1、在被监控机安装zabbix-agent客户端服务</p>
+<p>2、修改配置文件指定监控平台</p>
+<p>3、启动服务</p>
+<p>4、zabbix server监控平台添加</p>
+<h3 id="a、部署zabbix-agent监控服务"><a href="#a、部署zabbix-agent监控服务" class="headerlink" title="a、部署zabbix-agent监控服务"></a>a、部署zabbix-agent监控服务</h3><pre><code>#设置源
+[root@node1 ~]# cat /etc/yum.repos.d/zabbix.repo
+[zabbix]
+name=Zabbix Official Repository - $basearch
+#baseurl=http://repo.zabbix.com/zabbix/4.4/rhel/8/$basearch/
+baseurl=https://mirrors.aliyun.com/zabbix/zabbix/4.4/rhel/8/$basearch/
+enabled=1
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX-A14FE591
+
+[zabbix-non-supported]
+name=Zabbix Official Repository non-supported - $basearch
+baseurl=http://repo.zabbix.com/non-supported/rhel/8/$basearch/
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX
+gpgcheck=0
+
+#安装zabbix-agent服务
+[root@node1 ~]# dnf -y install zabbix-agent
+</code></pre>
+<h3 id="b、修改配置文件"><a href="#b、修改配置文件" class="headerlink" title="b、修改配置文件"></a>b、修改配置文件</h3><pre><code>[root@node1 ~]# vim /etc/zabbix/zabbix_agentd.conf 
+Server=192.168.98.200      #指定监控平台IP地址
+</code></pre>
+<h3 id="c、启动服务"><a href="#c、启动服务" class="headerlink" title="c、启动服务"></a>c、启动服务</h3><pre><code>#启动服务
+[root@node1 ~]# systemctl enable zabbix-agent
+
+Created symlink from /etc/systemd/system/multi-user.target.wants/zabbix-agent.service to /usr/lib/systemd/system/zabbix-agent.service.
+
+[root@node1 ~]# systemctl start zabbix-agent
+</code></pre>
+<h3 id="d、在监控平台添加被监控机器"><a href="#d、在监控平台添加被监控机器" class="headerlink" title="d、在监控平台添加被监控机器"></a>d、在监控平台添加被监控机器</h3><p>配置——主机——创建主机</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603530153425.png" alt="zabbix_agent1.png"></p>
+<p>进入创建主机菜单</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603530169082.png" alt="zabbix_agent2.png"></p>
+<p>主机名称：可以随便写，但是要有意义，建议按照城市名称+机房名称+主机IP这样比较好识别</p>
+<p>群组：可以理解为业务组</p>
+<p>IP地址：填入被监控机的IP地址</p>
+<p>模板：链接一个监控模板，里面已经设置好了监控项和图形、报警等</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603530184146.png" alt="zabbix_agent3.png"></p>
+<p>选择一个适合的模板，这里我们监控的node1是个linux机器，所以我选择的是Template OS Linux模板，注意一定别忘了点击模板下的添加小按钮，将其链接过来</p>
+<p>最后点击下方添加，主机就添加成功了</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603530197581.png" alt="zabbix_agent4.png"></p>
+<p>稍等一会，等被监控机的可用性ZBX[因为我们是基于zabbix-agent监控的]变成绿色，我们的任务就完成了</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603530210348.png" alt="zabbix_agent5.png"></p>
+<p>看到标记处变成绿色也就放心了。</p>
+<p>我们可以通过监控——图形来看看是不是有图形了</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603530223831.png" alt="zabbix_agent6.png"></p>
+<h1 id="自定义监控项"><a href="#自定义监控项" class="headerlink" title="自定义监控项"></a>自定义监控项</h1><p>自定义一个当前登陆用户数量监控脚本</p>
+<h3 id="a、自定一个用户数量收集脚本"><a href="#a、自定一个用户数量收集脚本" class="headerlink" title="a、自定一个用户数量收集脚本"></a>a、自定一个用户数量收集脚本</h3><pre><code>#创建一个插件目录，用于以后存放插件
+[root@zutuanxue ~]#  mkdir /etc/zabbix/libexec
+
+#编写一个统计用户登陆数量的脚本
+[root@zutuanxue ~]#  cat/etc/zabbix/libexec/check_user_number.sh
+#!/bin/bash
+#Description: 登陆用户监控脚本
+count=`who |wc -l`
+echo $count
+
+#给脚本执行权限
+[root@zutuanxue ~]#  chmod 755 /etc/zabbix/libexec/check_user_number.sh
+
+#测试脚本执行
+[root@zutuanxue ~]#  /etc/zabbix/libexec/check_user_number.sh
+1
+</code></pre>
+<h3 id="b、定义一个键值"><a href="#b、定义一个键值" class="headerlink" title="b、定义一个键值"></a>b、定义一个键值</h3><pre><code>[root@zutuanxue ~]# vim /etc/zabbix/zabbix_agentd.d/check_user_number.conf
+UserParameter=check.user.number,/etc/zabbix/libexec/check_user_number.sh
+ 插件配置文件的格式
+  指令=kye,value   按照格式写就可以了
+
+
+#重启生效
+[root@manage01 zabbix]# systemctl restart zabbix-agent
+</code></pre>
+<p><strong>注意:如果是监控其它主机，请将libexec目录以及zabbix_agentd.d目录下的配置文件都拷贝到远程主机的&#x2F;etc&#x2F;zabbix目录下，并重启zabbix-agent服务</strong></p>
+<h3 id="c、新建一个监控项，调用键值"><a href="#c、新建一个监控项，调用键值" class="headerlink" title="c、新建一个监控项，调用键值"></a>c、新建一个监控项，调用键值</h3><pre><code>注意：如果是希望所有主机都应用该监控项，那么就在对应的模板中创建监控项、图形
+     如果只是个别机器，那么就针对主机来设置监控项、图形
+</code></pre>
+<p>给 Template OS Linux 模板添加一个监控项</p>
+<p>依次点击 配置——模板 找到Template OS Linux选项，如图</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603530411363.png" alt="自定义监控监控项1.png"></p>
+<pre><code>应用集：   		监控项分组
+
+监控项：   		监控什么
+
+触发器：   		监控阈值
+
+图形：       		监控图形
+
+自动发现：  		自动添加监控业务
+
+WEB监测：  		监控WEB站点
+</code></pre>
+<p>点击 监控项，可以看到模板中的所有监控项，该页面可以对模板中的监控项进行管理。</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603530435453.png" alt="自定义监控监控项2.png"></p>
+<p>点击 创建监控项 后会弹出一个创建监控项菜单，依次填入对应的信息，就可以创建一个自定义的监控项了。<br><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603530451585.png" alt="自定义监控监控项3.png"></p>
+<p>单击 添加后，监控项就添加成功了。</p>
+<p>创建好了监控项不是最终的目的，最终的目的是通过监控项绘制图形，我们可以通过图表能看到信息，接下来我们来为这个监控项创建一个图表吧。</p>
+<p>点击当前界面的图形，就可以进入模板的图表管理界面了，如图</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603530465210.png" alt="自定义监控监控项4.png"></p>
+<p>图表管理界面可以对图形就行管理，我们这里选择 创建图形。</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603530478014.png" alt="自定义监控图形5.png"></p>
+<p>点击创建图形后，就会出现一个创建图形菜单</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603530492871.png" alt="自定义监控图形62579308.png"></p>
+<p>根据提示就把图形名称和对应的监控项填入即可。</p>
+<p>图形创建成功了，接下来测试一下吧。</p>
+<p>我们去找一个应用该模板的机器来看看是否有图形，图形是否有数据。</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603530507481.png" alt="自定义监控图形7.png"></p>
+<h1 id="Zabbix监控报警"><a href="#Zabbix监控报警" class="headerlink" title="Zabbix监控报警"></a>Zabbix监控报警</h1><p>监控报警机制是我们四要素中的一个重要要素，当机器或者监控资源达到阈值，就应该受到管理员关注。但是那么多的机器靠管理员去用眼睛看肯定是不行的，那么怎么能做到管理员只看有问题的机器呢，大家可能都能想到筛选机制吧！对的，我们把有问题的筛选出来就可以了，怎么筛选呢？那就让监控平台根据触发器筛选出来，并通过邮件、微信、钉钉等方式推送给管理员就可以了，做到有的放矢。</p>
+<p>关于监控报警有很多种方式，常见的有两种</p>
+<p>1）通过本机邮件客户端生成邮件，</p>
+<ul>
+<li><p>通过传输代理发给邮件服务器，</p>
+</li>
+<li><p>通过邮件投递代理发给管理员。</p>
+</li>
+</ul>
+<p>2）三方报警插件：如 onealter</p>
+<p>由于自己配置报警比较复杂，而且邮件容易被拒或当做垃圾邮件。有些专业的报警平台就可以帮你简单实现。</p>
+<p>如:onealeart<br>参考:<a target="_blank" rel="noopener" href="https://www.aiops.com/">https://www.aiops.com/</a></p>
+<h2 id="一、onealter安装"><a href="#一、onealter安装" class="headerlink" title="一、onealter安装"></a>一、onealter安装</h2><h3 id="onealter设置"><a href="#onealter设置" class="headerlink" title="onealter设置"></a>onealter设置</h3><p>访问官网</p>
+<p>可以访问<a target="_blank" rel="noopener" href="http://www.onealert.com/%EF%BC%9B%E4%B9%9F%E5%8F%AF%E4%BB%A5%E8%AE%BF%E9%97%AEhttps://www.aiops.com/%EF%BC%8C%E6%B3%A8%E5%86%8C%E8%B4%A6%E6%88%B7">http://www.onealert.com/；也可以访问https://www.aiops.com/，注册账户</a></p>
+<p>如果访问的是<a target="_blank" rel="noopener" href="http://www.onealert.com/%EF%BC%8C%E7%82%B9%E5%87%BB%E5%85%8D%E8%B4%B9%E8%AF%95%E7%94%A8%E4%B9%8B%E5%90%8E%E6%B3%A8%E5%86%8C">http://www.onealert.com/，点击免费试用之后注册</a></p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603531757916.png" alt="image20200213164140494.png"></p>
+<p>如果访问的是<a target="_blank" rel="noopener" href="https://www.aiops.com/%EF%BC%8C%E7%9B%B4%E6%8E%A5%E6%B3%A8%E5%86%8C">https://www.aiops.com/，直接注册</a></p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603531778720.png" alt="image20200213193407234.png"></p>
+<p>注册一个账号并登陆</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603531793906.png" alt="image20200213164226522.png"></p>
+<p>登陆后选择CA</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603531813053.png" alt="image20200213164348628.png"></p>
+<p>点击集成–选择zabbix</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603531830834.png" alt="image20200213164622598.png"></p>
+<p>可以看到onealter很强大，支持多种监控类型，课程中用的是zabbix，所有我们选项zabbix，然后点击配置。</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603531851905.png" alt="image20200213164941337.png"></p>
+<p>应用名称：为这个应用起一个名字</p>
+<p>自动关闭时间：如果没有手动关闭告警，多久内自动关闭</p>
+<p>点击保存应获取应用Key,为该应用生成一个key</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603531864612.png" alt="image20200213165138456.png"></p>
+<p>key生成成功了，接下来就要在监控平台按照上述的命令执行安装告警插件了。</p>
+<pre><code>#zabbix 监控平台 插件目录
+[root@zabbix ~]# mkdir -p /usr/local/zabbix-server/share/zabbix/alertscripts
+
+[root@zabbix ~]# cd /usr/local/zabbix-server/share/zabbix/alertscripts
+
+
+#下载监控插件
+[root@zabbix alertscripts]# wget https://download.aiops.com/ca_agent/zabbix/ca_zabbix_release-2.1.0.tar.gz
+
+#安装监控插件
+[root@zabbix alertscripts]# tar -xzf ca_zabbix_release-2.1.0.tar.gz
+
+[root@zabbix alertscripts]# cd cloudalert/bin 
+
+[root@zabbix bin]# bash install.sh 188728c3-c12b-fd2f-f3fd-bf8eb761e919 
+
+./log.sh:行6: /etc/zabbix/libexec/cloudalert/bin/cloudalert.conf: 没有那个文件或目录
+start to create config file...
+
+##输入交互信息
+Zabbix管理地址: http://192.168.98.200/zabbix
+Zabbix管理员账号: Admin
+Zabbix管理员密码: 
+.
+.
+.
+create action success!
+安装成功.
+</code></pre>
+<h2 id="二、onealter-报警插件设置"><a href="#二、onealter-报警插件设置" class="headerlink" title="二、onealter 报警插件设置"></a>二、onealter 报警插件设置</h2><p>告警插件安装成功了，接下来我们要设置告警通知了</p>
+<p>告警通知有多种，比如：邮件、微信、钉钉、APP、电话、短信等</p>
+<p>这里主要给大家介绍：邮件、微信、APP</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603532085724.png" alt="image20200213184629351.png"></p>
+<p>点击配置—通知策略进入通知页面</p>
+<p>在这里可以设置邮件报警，同时右侧也给出了APP下载地址，下载后直接安装登陆即可。</p>
+<p>这里我们先把告警状态、告警级别、通知方式、通知人都设置一下。</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603532099750.png" alt="image20200213194108292.png"></p>
+<p>好了，我点点添加，全部都设置成功了</p>
+<h3 id="添加多个人"><a href="#添加多个人" class="headerlink" title="添加多个人"></a>添加多个人</h3><p><strong>step 1</strong> 为团队添加成员</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603532119396.png" alt="image20200213201420457.png"></p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603532136205.png" alt="image20200213200952058.png"></p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603532167206.png" alt="image20200213194416754.png"></p>
+<p><strong>step 2</strong> 登录被邀请的用户邮箱选择接受邀请</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603532405930.png" alt="image20200213195116050.png"></p>
+<p>可以选择新用户，也可以选择已有账户，完成注册&#x2F;登录的操作后使用被邀请的用户进入到配置中的团队管理界面，看下能否看到两个用户</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603532435392.png" alt="image20200213201542249.png"></p>
+<p>如果不可以看到的话就切换到添加成员的界面，刷新一下就可以看到成员已经添加进来了，并且在团队管理中也可以看到响应的用户</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603532461447.png" alt="image20200213200626704.png"></p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603532475611.png" alt="image20200213201741467.png"></p>
+<p><strong>step 3</strong> 在配置，通知策略中可以新建通知了</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603532516890.png" alt="image20200213202254560.png"></p>
+<p><strong>step 4</strong> 选择保存之后，就可以看到两个用户都有显示了</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603532561877.png" alt="image20200213202350511.png"></p>
+<p>以上就是单人通知和多人通知的设置方式。</p>
+<p>接下来我们在设置一下微信报警</p>
+<p>点击右上角的人头像—个人中心</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603532579455.png" alt="image20200213202703413.png"></p>
+<p>点击绑定微信，使用微信扫描即可绑定。</p>
+<p>好了到此我们的告警插件就设置好了，接下来要设置zabbix-server平台。</p>
+<h2 id="三、zabbix监控平台调用报警插件"><a href="#三、zabbix监控平台调用报警插件" class="headerlink" title="三、zabbix监控平台调用报警插件"></a>三、zabbix监控平台调用报警插件</h2><p><strong>案例: 监控平台调用onealter插件，实现报警</strong></p>
+<p>点击管理—报警媒介类型</p>
+<p>可以看到我们安装好的onealter，我们点击后边的测试，看看是否能正常工作</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603532954403.png" alt="onealter8.png"></p>
+<pre><code>如果测试失败，一般是找不到文件，做个链接
+[root@manage01 bin]#  ln -s /usr/local/zabbix-server/share/zabbix/alertscripts/cloudalert /usr/lib/zabbix/alertscripts/
+</code></pre>
+<p>再次测试</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603533012961.png" alt="image20200215220103776.png"></p>
+<p>输入收件人地址后，点击测试</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603533038982.png" alt="image20200215220148496.png"></p>
+<p>如上图，测试成功了。</p>
+<p>回到zabbix告警平台点击右上角 人头像—报警媒介—添加收件人</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603533071992.png" alt="image20200214161626166.png"></p>
+<p>设置告警收件人，可以设置多个人。</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603533104780.png" alt="image20200214155900052.png"></p>
+<p>ok，我们zabbix监控平台设置好了。</p>
+<h3 id="测试报警"><a href="#测试报警" class="headerlink" title="测试报警"></a>测试报警</h3><p>之前设置过一个自定义监控，我们监控了登陆用户数量，我们通过同时登陆node1超过三个用户，验证报警。</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603533145726.png" alt="onealter12.png"></p>
+<p>可以看到，node1的当前用户量已经超过了预警值</p>
+<p>看看邮箱吧，是否收到报警</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603533167741.png" alt="image20200214155944190.png"></p>
+<p>当你把多余的用户退出以后还会收到邮件</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/24/1603533227451.png" alt="image20200214161309486.png"></p>
+<p>测试成功。</p>
+<h1 id="Zabbix分布式监控"><a href="#Zabbix分布式监控" class="headerlink" title="Zabbix分布式监控"></a>Zabbix分布式监控</h1><p>生产环境中，我们为了实现地域容灾，我们会把服务器放在不同的地域，如果一台zabbix server去监控的话，延迟会高，因为中国的网络由很多运营商在经营，包括联通，移动，电信，教育等等，有玩游戏的同学应该清楚，家里是联通的网络，你去会去电信的服务器么？不会，因为延迟太高。为什么延迟高？因为运营商之间的出口带宽是有限制的，为什么有限制？因为费用不一样，你在便宜的运营商这里办宽带，在贵的运营商这里玩，这种事，换做是谁都不会高兴的。有的同学说我用游戏加速器怎么延迟就低了？使用游戏加速器相当于在大家都从一扇门进出的时候，你发现了一扇窗，而这扇窗就你自己在用，但是当其他人也发现了这扇窗之后呢？所以即便是使用了游戏加速器，在上网高峰时，延迟还是高，只不过没有那么拥挤而已。说完了为什么延迟会高，我们再看一下另外一个问题，这种把服务器放在不同的地域也会造成zabbix server压力也会很大，所以为了避免这种情况，我们的处理方法就是将权利下发，在不同的地域都找一个机器来充当代理，本地的监控工作由代理(proxy)来完成，代理完成收集工作后交给zabbix server，zabbix server在将收到的数据统一整理展示到web。</p>
+<p>其实这个例子很简单就是你开了很多分公司，你一个人去管理这些分公司的员工的话，你是管不全面的，所以我们的方法是在每个分公司弄一个负责人，负责人管当地的员工，你管负责人。有问题他们集中向你汇报就好了。这样你就能很顺利的掌控全局了。</p>
+<p><strong>架构图</strong></p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603593373704.png" alt="image20200219101305467.png"></p>
+<p>所以在这个分布式监控的架构中的流程是</p>
+<p>1、zabbix server发布指令给代理</p>
+<p>2、zabbix-proxy将指令发给被监控主机</p>
+<p>3、被监控机将数据汇报给zabbix-proxy</p>
+<p>4、zabbix-proxy再交给zabbix-server</p>
+<p>5、zabbix-server将数据展示</p>
+<p>这样解决了延迟问题，只要保证一条线路畅通就可以了，至于保证一条线路畅通的手段就看你的公司了，有钱可以接专线，没钱可以使用VPN，实在不行可以直接走广域网</p>
+<h3 id="实验拓扑图"><a href="#实验拓扑图" class="headerlink" title="实验拓扑图"></a>实验拓扑图</h3><p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603593518849.png" alt="zabbix_proxy.png"></p>
+<p>在这个架构中我们至少需要三台机器，他们的角色为</p>
+<ul>
+<li><strong>zabbix-server：</strong> 192.168.98.200</li>
+<li><strong>zabbix-proxy：</strong> 192.168.98.205</li>
+<li><strong>被监控主机：</strong> 192.168.98.xxx</li>
+</ul>
+<h3 id="实验步骤"><a href="#实验步骤" class="headerlink" title="实验步骤"></a>实验步骤</h3><p>部署server监控平台 (略)</p>
+<p>部署proxy代理平台</p>
+<p>被监控机安装zabbix-agent（略）</p>
+<h2 id="一、部署zabbix-proxy代理平台"><a href="#一、部署zabbix-proxy代理平台" class="headerlink" title="一、部署zabbix-proxy代理平台"></a>一、部署zabbix-proxy代理平台</h2><h3 id="1-1、安装zabbix-proxy平台"><a href="#1-1、安装zabbix-proxy平台" class="headerlink" title="1.1、安装zabbix-proxy平台"></a>1.1、安装zabbix-proxy平台</h3><pre><code>#设置yum源
+[root@proxy ~]# cat &gt;&gt; /etc/yum.repos.d/zabbix.repo &lt;&lt;EOF
+[zabbix]
+name=Zabbix Official Repository - $basearch
+baseurl=http://repo.zabbix.com/zabbix/4.4/rhel/8/$basearch/
+#baseurl=https://mirrors.aliyun.com/zabbix/zabbix/4.4/rhel/8/$basearch/
+enabled=1
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX-A14FE591
+
+[zabbix-non-supported]
+name=Zabbix Official Repository non-supported - $basearch
+baseurl=http://repo.zabbix.com/non-supported/rhel/8/$basearch/
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX
+gpgcheck=0
+
+#安装软件包
+[root@proxy ~]# dnf -y install mariadb-server mariadb zabbix-proxy-mysql zabbix-agent
+
+############################################################
+注意：如果无法连接公网的源，可以用浏览器将软件包下载到本地，然后自己创建本地源
+step1
+[root@proxy ~]# dnf install createrepo -y
+
+step2
+[root@proxy ~]# createrepo zabbix/（此路径为存放软件包的路径）
+
+step3
+[root@proxy ~]# vim /etc/yum.repos.d/server.repo 
+[server-app]
+name=server-app
+enable=1
+gpgcheck=0
+baseurl=file:///mnt/AppStream
+[server-os]
+name=server-os
+enable=1
+gpgcheck=0
+baseurl=file:///mnt/BaseOS
+[zabbix]
+name=zabbix
+enabled=1
+gpgcheck=0
+baseurl=file:///root/zabbix
+
+step4
+[root@proxy ~]# dnf -y install mariadb-server mariadb zabbix-proxy-mysql zabbix-agent
+############################################################
+
+
+
+#mariadb设置
+#启动服务
+[root@proxy ~]# systemctl enable mariadb
+Created symlink from /etc/systemd/system/multi-user.target.wants/mariadb.service to /usr/lib/systemd/system/mariadb.service.
+[root@proxy ~]# systemctl start mariadb
+[root@proxy ~]# mysqladmin -u root password &#39;123456&#39;
+#创建数据库 zabbix_proxy及管理用户
+[root@proxy ~]# mysql -u root -p
+MariaDB [(none)]&gt; create database zabbix_proxy character set utf8 collate utf8_bin;
+Query OK, 1 row affected (0.00 sec)
+
+MariaDB [(none)]&gt;  grant all privileges on zabbix_proxy.* to zabbix@localhost identified by &#39;123456&#39;;
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [(none)]&gt; flush privileges;
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [(none)]&gt; exit
+Bye
+
+#导入数据
+[root@proxy ~]# zcat /usr/share/doc/zabbix-proxy-mysql/schema.sql.gz |mysql -u zabbix -p123456 zabbix_proxy
+</code></pre>
+<h3 id="1-2、修改proxy配置文件"><a href="#1-2、修改proxy配置文件" class="headerlink" title="1.2、修改proxy配置文件"></a>1.2、修改proxy配置文件</h3><pre><code>[root@proxy ~]# egrep &quot;^(Server|Hostname|DBPass)&quot; /etc/zabbix/zabbix_proxy.conf 
+Server=192.168.98.200		#将数据汇报给谁
+Hostname=zabbix_proxy		#自己的名字
+DBPassword=123456				#数据库密码
+</code></pre>
+<h3 id="1-3、关于proxy的监控问题"><a href="#1-3、关于proxy的监控问题" class="headerlink" title="1.3、关于proxy的监控问题"></a>1.3、关于proxy的监控问题</h3><p>由于proxy既是监控也是被监控机，所以本机的agent的服务器地址可以设置本机或者server地址，这里建议设置server地址。因为这样zabbix server能够直接监控到本机的状态</p>
+<pre><code>[root@proxy ~]# egrep &quot;^(Server|Hostname)&quot; /etc/zabbix/zabbix_agentd.conf 
+Server=192.168.98.200
+ServerActive=192.168.98.200
+Hostname=proxy 
+</code></pre>
+<h3 id="1-4、启动服务"><a href="#1-4、启动服务" class="headerlink" title="1.4、启动服务"></a>1.4、启动服务</h3><pre><code>[root@proxy ~]# systemctl enable zabbix-proxy zabbix-agent
+Created symlink from /etc/systemd/system/multi-user.target.wants/zabbix-proxy.service to /usr/lib/systemd/system/zabbix-proxy.service.
+Created symlink from /etc/systemd/system/multi-user.target.wants/zabbix-agent.service to /usr/lib/systemd/system/zabbix-agent.service.
+[root@proxy ~]# systemctl start zabbix-proxy zabbix-agent
+</code></pre>
+<p>查看一下日志显示的内容，以及确认下端口是否打开</p>
+<pre><code>[root@proxy ~]# tail -f /var/log/zabbix/zabbix_proxy.log
+34539:20200215:133633.989 proxy #13 started [history syncer #2]
+ 34547:20200215:133633.990 proxy #21 started [poller #4]
+ 34548:20200215:133633.996 proxy #22 started [poller #5]
+ 34546:20200215:133633.998 proxy #20 started [poller #3]
+ 34551:20200215:133634.000 proxy #25 started [preprocessing manager #1]
+ 34550:20200215:133634.003 proxy #24 started [icmp pinger #1]
+ 34549:20200215:133634.003 proxy #23 started [unreachable poller #1]
+ 34552:20200215:133635.011 proxy #26 started [preprocessing worker #1]
+ 34554:20200215:133635.014 proxy #28 started [preprocessing worker #3]
+ 34553:20200215:133635.019 proxy #27 started [preprocessing worker #2]
+ 34534:20200215:133641.038 cannot send proxy data to server at &quot;192.168.98.200&quot;: proxy &quot;zabbix_proxy&quot; not found
+ 34534:20200215:133642.041 cannot send proxy data to server at &quot;192.168.98.200&quot;: proxy &quot;zabbix_proxy&quot; not found
+ 34534:20200215:133643.044 cannot send proxy data to server at &quot;192.168.98.200&quot;: proxy &quot;zabbix_proxy&quot; not found
+ 34534:20200215:133644.046 cannot send proxy data to server at &quot;192.168.98.200&quot;: proxy &quot;zabbix_proxy&quot; not found
+ 34534:20200215:133645.049 cannot send proxy data to server at &quot;192.168.98.200&quot;: proxy &quot;zabbix_proxy&quot; not found
+
+[root@proxy ~]# netstat -ntlp 
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+tcp        0      0 0.0.0.0:10050           0.0.0.0:*               LISTEN      33953/zabbix_agentd 
+tcp        0      0 0.0.0.0:10051           0.0.0.0:*               LISTEN      33960/zabbix_proxy  
+tcp6       0      0 :::10050                :::*                    LISTEN      33953/zabbix_agentd 
+tcp6       0      0 :::10051                :::*                    LISTEN      33960/zabbix_proxy  
+tcp6       0      0 :::3306                 :::*                    LISTEN      33219/mysqld        
+</code></pre>
+<p>通过查看日志，我们发现日志当中好像有报错，这个我们一会再说，通过查看端口可以发现zabbix_proxy与zabbix_server使用的端口是一样的，所以这两个角色不能配置在一台主机上</p>
+<h3 id="1-5、监控平台设置"><a href="#1-5、监控平台设置" class="headerlink" title="1.5、监控平台设置"></a>1.5、监控平台设置</h3><p>刚才我们在查看日志的时候发现日志中好像有错误提示，这个提示产生的原因就是服务端不认这个代理，代理给服务端发数据，服务端不要，所以我们要告诉服务端，它的代理是谁</p>
+<p>管理—agent代理程序</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603593691636.png" alt="zabbixproxy1.png"></p>
+<p>选择 创建代理 进入代理设置模式</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603593701268.png" alt="zabbixproxy2.png"></p>
+<p>设置代理名称:一定要和proxy配置文件中的Hostname一致</p>
+<p>设置代理模式：主动</p>
+<p>1）proxy主动模式</p>
+<p>zabbix_proxy主动发数据给zabbix_server(proxy的默认模式)</p>
+<pre><code># vim /etc/zabbix/zabbix_proxy.conf
+ProxyMode=0							--此参数为0表示proxy主动模式	
+</code></pre>
+<p>2）proxy被动模式</p>
+<p>zabbix_server找zabbix_proxy为收集数据</p>
+<pre><code># vim /etc/zabbix/zabbix_proxy.conf
+ProxyMode=1						   --此参数为1表示proxy主动模式						  
+</code></pre>
+<p>警告</p>
+<pre><code>为了避免服务端不识别代理或者其它主机的情况，建议在zabbix_server最好给代理名字及其它主机做个解析
+[root@zabbix ~]# vim /etc/hosts
+192.168.98.205  proxy zabbix_proxy 
+</code></pre>
+<h2 id="二、设置被监控机"><a href="#二、设置被监控机" class="headerlink" title="二、设置被监控机"></a>二、设置被监控机</h2><pre><code>[root@node4 ~]# egrep &quot;^(Server|Hostname)&quot; /etc/zabbix/zabbix_agentd.conf 
+Server=192.168.98.205
+ServerActive=192.168.98.205
+Hostname=node4
+
+[root@node4 ~]#  systemctl restart zabbix-agent
+[root@node2 ~]# netstat -ntlp 
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name     
+tcp        0      0 0.0.0.0:10050           0.0.0.0:*               LISTEN      7836/zabbix_agentd  
+tcp6       0      0 :::10050                :::*                    LISTEN      7836/zabbix_agentd  
+</code></pre>
+<h2 id="三、验证"><a href="#三、验证" class="headerlink" title="三、验证"></a>三、验证</h2><p>由于之前配置过自动注册，所以应该在主机列表中能看到就算成功了。</p>
+<p>配置—主机</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603593756229.png" alt="image20200215140100181.png"></p>
+<p>看到了，node2后面有一个zabbix_proxy 说明该主机走的是代理模式。</p>
+<p>如果查看监测–图形时很久不出图，建议分别重启zabbix_proxy和客户端的zabbix-proxy以及zabbix-agent服务</p>
+<h1 id="模板管理"><a href="#模板管理" class="headerlink" title="模板管理"></a>模板管理</h1><p><strong>模板(template)</strong>: 对于我们来说是非常重要的，因为它保存了监控项，应用集（给监控项分的组），触发器，图形，聚合图形，自动发现规则，web监测等的一组实体。最主要的是给懒人们提供了方便</p>
+<p>我们使用模板可以方便应用到主机，更改模板也会将更改应用到所有链接的主机。避免了每一台主机都需要手动去添加，手动去更改的麻烦</p>
+<p>参考: <a target="_blank" rel="noopener" href="https://www.zabbix.com/documentation/3.4/zh/manual/config/templates">https://www.zabbix.com/documentation/3.4/zh/manual/config/templates</a></p>
+<p>在工作中，我们也可以根据自己公司的实际情况去创建模板，然后将目标应用到公司的服务器上去</p>
+<h2 id="一、创建一个模板"><a href="#一、创建一个模板" class="headerlink" title="一、创建一个模板"></a>一、创建一个模板</h2><p>配置—模板</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603593961462.png" alt="模板1.png"></p>
+<p>点击创建模板进入模板菜单</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603593971773.png" alt="模板2.png"></p>
+<p>模板创建成功后，需要设置模板中的相关属性</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603593979759.png" alt="模板3.png"></p>
+<p>由于我们之前修改过系统自带的模板，我们现在把他还原，也就是把之前我们添加的那个查看用户数量的相关信息都删除，然后再将监控用户数量这个设置添加到自己的模板中</p>
+<p>首先找到之前添加的位置</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603594059969.png" alt="image20200215142907258.png"></p>
+<p>选择“监控项”把之前我们手动添加的内容并删除</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603594004364.png" alt="image20200215143108427.png"></p>
+<p>注意：如果是先删除“监控项”中的记录，那么“触发器”和“图形”中的也会跟着删除，如果是先删除“触发器”和“图形”中的记录，一定要记得回到“监控项”中将记录删除，删除完成之后，找到我们自己的模板选择监控项</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603594087710.png" alt="image20200215153151362.png"></p>
+<p>然后我们创建一个监控项</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603594114851.png" alt="image20200215153833443.png"></p>
+<p>监控项添加好了我们接着添加图形</p>
+<p>点击图形–创建图形</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603594145519.png" alt="image20200215154057905.png"></p>
+<p>接下来是触发器–创建触发器</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603594169936.png" alt="image20200215154323984.png"></p>
+<p>设置完成之后点击“插入”和“添加”</p>
+<p>现在这个模板我就定义完成了，那这个模板怎么使用呢？</p>
+<p>直接点击配置–主机，选择node2</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603594203095.png" alt="image20200215155458753.png"></p>
+<p>然后选择模板，取消并清理，选择我们自己创建的模板，点击更新</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603594219316.png" alt="image20200215155614926.png"></p>
+<p>然后你就可以看到了</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603594230717.png" alt="image20200215155638220.png"></p>
+<p>切换到监测–图形就可以查看到图形内容了</p>
+<pre><code>注意：设置完成之后建议重新启动zabbix-proxy和zabbix-agent服务，如果是新的主机，新的主机上要存在相关的脚本和配置文件，相关操作还记得吧
+mkdir /etc/zabbix/libexec
+
+cat/etc/zabbix/libexec/check_user_number.sh
+#!/bin/bash
+#Description: 登陆用户监控脚本
+count=`who |wc -l`
+echo $count
+
+chmod 755 /etc/zabbix/libexec/check_user_number.sh
+
+/etc/zabbix/libexec/check_user_number.sh
+
+vim /etc/zabbix/zabbix_agentd.d/check_user.conf
+
+UserParameter=check.user,/etc/zabbix/libexec/check_user_number.sh
+ 
+systemctl restart zabbix-agent zabbix-proxy
+</code></pre>
+<h2 id="二、导出一个模板"><a href="#二、导出一个模板" class="headerlink" title="二、导出一个模板"></a>二、导出一个模板</h2><p>导入导出模式是一个非常好的功能，在一台监控主机上的设置如果想用再其它监控主机而不想从头建立模板的时候，就需要用到这个功能</p>
+<p><strong>导入导出</strong>可以帮你轻松实现，导出的是<strong>xml</strong>格式文件.</p>
+<p>配置－－主机－－选取要导出的主机（前面打勾）－－下面选择导出</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603594286591.png" alt="image20200215175546553.png"></p>
+<p>各位要注意，导出的只是模板，如果想拿到其它主机上使用的话，模板里面所涉及到的key，插件也需要一起保存，所谓的插件就是存放在&#x2F;etc&#x2F;zabbix&#x2F;libexec目录下的内容，而key就是存放在&#x2F;etc&#x2F;zabbix&#x2F;zabbix_agent.d&#x2F;*.conf文件</p>
+<h2 id="三、导入一个模板"><a href="#三、导入一个模板" class="headerlink" title="三、导入一个模板"></a>三、导入一个模板</h2><p>你可以在网上下载好zabbix的监控模板，下载的时候记得把相关的key文件和插件文件一同下载,下载完成之后将对应的key文件和插件拷贝到对应目录</p>
+<p>在被监控主机上添加key和插件</p>
+<pre><code>[root@node2 ~]# cd znginx-master/
+[root@node2 znginx-master]# ls
+Readme.txt  userparameter_znginx.conf.sample  zbx_export_templates.xml  znginx
+[root@node2 znginx-master]# cp znginx /etc/zabbix/libexec/
+[root@node2 znginx-master]# cp userparameter_znginx.conf.sample /etc/zabbix/zabbix_agentd.d/
+[root@node2 znginx-master]# cd /etc/zabbix/zabbix_agentd.d/
+[root@node2 zabbix_agentd.d]# mv userparameter_znginx.conf.sample userparameter_znginx.conf
+</code></pre>
+<p>配置—模板—导入</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603594316548.png" alt="image20200215182702772.png"></p>
+<p>点击导入文件部分的按钮，选择对应的xml文件，点击导入</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603594328789.png" alt="image20200215182818104.png"></p>
+<p>返回模板中看下是否有新导入的模板</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603594344461.png" alt="image20200215182935259.png"></p>
+<p>然后你就可以正常使用了</p>
+<p>注意：在导入过程中记得选择xml文件，而下载模板文件的时候注意版本跨度不要太大，否则模板会无法正常使用。</p>
+<h1 id="Zabbix主动监控和被动监控"><a href="#Zabbix主动监控和被动监控" class="headerlink" title="Zabbix主动监控和被动监控"></a>Zabbix主动监控和被动监控</h1><p>zabbix在监控的时候有两种模式，一种是主动模式，另外一种是被动模式</p>
+<h2 id="一、被动模式"><a href="#一、被动模式" class="headerlink" title="一、被动模式"></a>一、被动模式</h2><p>所谓的被动模式，是以zabbix-agent做为参考对象，也就是表示是server或proxy去找agent拿数据，agent被动的等待指令的下达，让我干什么活，我就去干什么活，这也是zabbix server的默认模式，为什么这么说？我们可以随便找一台主机的查看它的监控项中在名称下面有一个类型，在这里面我们看到的是“zabbix客户端”这个值</p>
+<p><img src="https://www.zutuanxue.com:8000/static/media/images/2020/10/25/1603594519820.png" alt="image20200215184213711.png"></p>
+<p>这个值在已经设置好的监控项当中是不能更改的，但是如果我们新建监控项的时候你就会发现，类型里面还有一个叫“zabbix客户端（主动式）”的选项。所以说zabbix默认的都是被动模式</p>
+<p>配置方法如下:</p>
+<pre><code>agent端配置被动模式的参数如下
+[root@agent1 ~]# vim /etc/zabbix/zabbix_agentd.conf
+Server=10.1.1.13		--IP为zabbix_proxy的ip(如果没有proxy，则直接为zabbix_server的ip)
+[root@agent1 ~]# systemctl restart zabbix-agent
+</code></pre>
+<h2 id="二、主动模式"><a href="#二、主动模式" class="headerlink" title="二、主动模式"></a>二、主动模式</h2><p>也就是agent主动把数据传给server或proxy</p>
+<p>agent主动模式的优点是: 当agent太多的情况下，server或proxy去找这么多agent搜集数据，压力负载过大。用主动模式就可以缓解server或proxy的压力。</p>
+<p>但用主动模式的问题是: 监控项当中的类型，也要转为主动式才行，而且很多zabbix自带模板里的监控项不支持转为主动式.</p>
+<pre><code>agent端配置主动模式的参数如下
+[root@agent1 ~]# vim /etc/zabbix/zabbix_agentd.conf
+Serveractive=10.1.1.13	 --IP为zabbix_proxy的ip(如果没有proxy，则直接为zabbix_server的ip)
+[root@agent1 ~]# systemctl restart zabbix-agent
+</code></pre>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">demacia9</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/09/26/%E7%9B%91%E6%8E%A7%E5%B7%A5%E5%85%B7-Zabbix/">http://example.com/2023/09/26/%E7%9B%91%E6%8E%A7%E5%B7%A5%E5%85%B7-Zabbix/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Linux运维学习笔记</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/001.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/09/26/%E7%9B%91%E6%8E%A7%E5%B7%A5%E5%85%B7-Prometheus/" title="监控工具-Prometheus"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">监控工具-Prometheus</div></div></a></div><div class="next-post pull-right"><a href="/2023/09/26/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" title="计算机网络"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">计算机网络</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/001.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">demacia9</div><div class="author-info__description">黄沙漫卷西风裂，鸡你太美万人迷</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Zabbix%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2"><span class="toc-number">1.</span> <span class="toc-text">Zabbix安装部署</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E9%83%A8%E7%BD%B2zabbix%E7%9B%91%E6%8E%A7%E5%B9%B3%E5%8F%B0"><span class="toc-number">1.1.</span> <span class="toc-text">一、部署zabbix监控平台</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%AB%99%E7%82%B9%E8%AE%BE%E7%BD%AE"><span class="toc-number">1.2.</span> <span class="toc-text">二、站点设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81zabbix-web%E7%95%8C%E9%9D%A2%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.3.</span> <span class="toc-text">三、zabbix web界面介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E7%9B%91%E6%8E%A7%E6%9C%AC%E6%9C%BA"><span class="toc-number">1.4.</span> <span class="toc-text">四、监控本机</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">用户管理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7%E6%A1%88%E4%BE%8B%E2%80%94%E7%9B%91%E6%8E%A7%E4%B8%80%E5%8F%B0%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">3.</span> <span class="toc-text">监控案例—监控一台服务器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#a%E3%80%81%E9%83%A8%E7%BD%B2zabbix-agent%E7%9B%91%E6%8E%A7%E6%9C%8D%E5%8A%A1"><span class="toc-number">3.0.1.</span> <span class="toc-text">a、部署zabbix-agent监控服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#b%E3%80%81%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">3.0.2.</span> <span class="toc-text">b、修改配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#c%E3%80%81%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1"><span class="toc-number">3.0.3.</span> <span class="toc-text">c、启动服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#d%E3%80%81%E5%9C%A8%E7%9B%91%E6%8E%A7%E5%B9%B3%E5%8F%B0%E6%B7%BB%E5%8A%A0%E8%A2%AB%E7%9B%91%E6%8E%A7%E6%9C%BA%E5%99%A8"><span class="toc-number">3.0.4.</span> <span class="toc-text">d、在监控平台添加被监控机器</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9B%91%E6%8E%A7%E9%A1%B9"><span class="toc-number">4.</span> <span class="toc-text">自定义监控项</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#a%E3%80%81%E8%87%AA%E5%AE%9A%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7%E6%95%B0%E9%87%8F%E6%94%B6%E9%9B%86%E8%84%9A%E6%9C%AC"><span class="toc-number">4.0.1.</span> <span class="toc-text">a、自定一个用户数量收集脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#b%E3%80%81%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA%E9%94%AE%E5%80%BC"><span class="toc-number">4.0.2.</span> <span class="toc-text">b、定义一个键值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#c%E3%80%81%E6%96%B0%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%9B%91%E6%8E%A7%E9%A1%B9%EF%BC%8C%E8%B0%83%E7%94%A8%E9%94%AE%E5%80%BC"><span class="toc-number">4.0.3.</span> <span class="toc-text">c、新建一个监控项，调用键值</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Zabbix%E7%9B%91%E6%8E%A7%E6%8A%A5%E8%AD%A6"><span class="toc-number">5.</span> <span class="toc-text">Zabbix监控报警</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81onealter%E5%AE%89%E8%A3%85"><span class="toc-number">5.1.</span> <span class="toc-text">一、onealter安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#onealter%E8%AE%BE%E7%BD%AE"><span class="toc-number">5.1.1.</span> <span class="toc-text">onealter设置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81onealter-%E6%8A%A5%E8%AD%A6%E6%8F%92%E4%BB%B6%E8%AE%BE%E7%BD%AE"><span class="toc-number">5.2.</span> <span class="toc-text">二、onealter 报警插件设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E5%A4%9A%E4%B8%AA%E4%BA%BA"><span class="toc-number">5.2.1.</span> <span class="toc-text">添加多个人</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81zabbix%E7%9B%91%E6%8E%A7%E5%B9%B3%E5%8F%B0%E8%B0%83%E7%94%A8%E6%8A%A5%E8%AD%A6%E6%8F%92%E4%BB%B6"><span class="toc-number">5.3.</span> <span class="toc-text">三、zabbix监控平台调用报警插件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%8A%A5%E8%AD%A6"><span class="toc-number">5.3.1.</span> <span class="toc-text">测试报警</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Zabbix%E5%88%86%E5%B8%83%E5%BC%8F%E7%9B%91%E6%8E%A7"><span class="toc-number">6.</span> <span class="toc-text">Zabbix分布式监控</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E6%8B%93%E6%89%91%E5%9B%BE"><span class="toc-number">6.0.1.</span> <span class="toc-text">实验拓扑图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E6%AD%A5%E9%AA%A4"><span class="toc-number">6.0.2.</span> <span class="toc-text">实验步骤</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E9%83%A8%E7%BD%B2zabbix-proxy%E4%BB%A3%E7%90%86%E5%B9%B3%E5%8F%B0"><span class="toc-number">6.1.</span> <span class="toc-text">一、部署zabbix-proxy代理平台</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1%E3%80%81%E5%AE%89%E8%A3%85zabbix-proxy%E5%B9%B3%E5%8F%B0"><span class="toc-number">6.1.1.</span> <span class="toc-text">1.1、安装zabbix-proxy平台</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2%E3%80%81%E4%BF%AE%E6%94%B9proxy%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">6.1.2.</span> <span class="toc-text">1.2、修改proxy配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3%E3%80%81%E5%85%B3%E4%BA%8Eproxy%E7%9A%84%E7%9B%91%E6%8E%A7%E9%97%AE%E9%A2%98"><span class="toc-number">6.1.3.</span> <span class="toc-text">1.3、关于proxy的监控问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4%E3%80%81%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1"><span class="toc-number">6.1.4.</span> <span class="toc-text">1.4、启动服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5%E3%80%81%E7%9B%91%E6%8E%A7%E5%B9%B3%E5%8F%B0%E8%AE%BE%E7%BD%AE"><span class="toc-number">6.1.5.</span> <span class="toc-text">1.5、监控平台设置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E8%AE%BE%E7%BD%AE%E8%A2%AB%E7%9B%91%E6%8E%A7%E6%9C%BA"><span class="toc-number">6.2.</span> <span class="toc-text">二、设置被监控机</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E9%AA%8C%E8%AF%81"><span class="toc-number">6.3.</span> <span class="toc-text">三、验证</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF%E7%AE%A1%E7%90%86"><span class="toc-number">7.</span> <span class="toc-text">模板管理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E6%A8%A1%E6%9D%BF"><span class="toc-number">7.1.</span> <span class="toc-text">一、创建一个模板</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%AF%BC%E5%87%BA%E4%B8%80%E4%B8%AA%E6%A8%A1%E6%9D%BF"><span class="toc-number">7.2.</span> <span class="toc-text">二、导出一个模板</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%AF%BC%E5%85%A5%E4%B8%80%E4%B8%AA%E6%A8%A1%E6%9D%BF"><span class="toc-number">7.3.</span> <span class="toc-text">三、导入一个模板</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Zabbix%E4%B8%BB%E5%8A%A8%E7%9B%91%E6%8E%A7%E5%92%8C%E8%A2%AB%E5%8A%A8%E7%9B%91%E6%8E%A7"><span class="toc-number">8.</span> <span class="toc-text">Zabbix主动监控和被动监控</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%A2%AB%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">8.1.</span> <span class="toc-text">一、被动模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">8.2.</span> <span class="toc-text">二、主动模式</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/26/%E7%9B%91%E6%8E%A7%E5%B7%A5%E5%85%B7-Prometheus/" title="监控工具-Prometheus">监控工具-Prometheus</a><time datetime="2023-09-26T10:30:20.000Z" title="发表于 2023-09-26 18:30:20">2023-09-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/26/%E7%9B%91%E6%8E%A7%E5%B7%A5%E5%85%B7-Zabbix/" title="监控工具-Zabbix">监控工具-Zabbix</a><time datetime="2023-09-26T10:29:46.000Z" title="发表于 2023-09-26 18:29:46">2023-09-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/26/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" title="计算机网络">计算机网络</a><time datetime="2023-09-26T10:19:11.000Z" title="发表于 2023-09-26 18:19:11">2023-09-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/26/Web%E6%9C%8D%E5%8A%A1%E5%99%A8/" title="Web服务器—nginx与tomcat">Web服务器—nginx与tomcat</a><time datetime="2023-09-26T09:54:31.000Z" title="发表于 2023-09-26 17:54:31">2023-09-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/26/shell%E8%84%9A%E6%9C%AC/" title="shell脚本">shell脚本</a><time datetime="2023-09-26T09:30:39.000Z" title="发表于 2023-09-26 17:30:39">2023-09-26</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By demacia9</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
